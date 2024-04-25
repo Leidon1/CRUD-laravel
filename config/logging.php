@@ -63,6 +63,8 @@ return [
             'path' => storage_path('logs/laravel.log'),
             'level' => env('LOG_LEVEL', 'debug'),
             'replace_placeholders' => true,
+            'max_files' => 300, // Keep up to 30 log files
+            'max_size' => 100024, // Rotate log file when it reaches 1 MB in size
         ],
 
         'daily' => [

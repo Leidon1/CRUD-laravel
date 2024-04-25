@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -18,7 +17,7 @@ return new class extends Migration
             $table->string('username')->unique();
             $table->string('email')->unique();
             $table->string('gender');
-            $table->string('profile_photo');
+            $table->string('profile_photo')->nullable()->default('./resources/img/default.png');
             $table->date('birthday');
             $table->string('country');
             $table->timestamp('last_login')->nullable();

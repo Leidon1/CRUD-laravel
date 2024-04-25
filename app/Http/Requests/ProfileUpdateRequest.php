@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -17,7 +18,11 @@ class ProfileUpdateRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
+            'last_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', Rule::unique(User::class)->ignore($this->user()->id)],
+            'gender' => ['required', 'string', 'in:male,female,non-binary'],
+            'country' => ['required', 'string', 'in:' . implode(',', config('global.countries'))],
+            'birthday' => ['required', 'date', 'before:' . Carbon::now()->subYears(18)->toDateString(), 'after:' . Carbon::now()->subYears(100)->toDateString()],
         ];
     }
 }
