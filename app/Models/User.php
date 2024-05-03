@@ -44,6 +44,7 @@ class User extends Authenticatable
      * @var array<string, string>
      */
     protected $casts = [
+        'profile_photo' => 'string',
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
         'birthday' => 'date',
@@ -55,4 +56,12 @@ class User extends Authenticatable
      * @var string
      */
     protected $dateFormat = 'Y-m-d H:i:s';
+    /**
+     * The attributes that should have default values.
+     *
+     * @var array
+     */
+    protected $attributes = [
+        'profile_photo' => 'https://media.licdn.com/dms/image/C4E0BAQGiEj7SiyhMUA/company-logo_200_200/0/1668178088214/we_web_developers_logo?e=2147483647&v=beta&t=PPaEYSJkqAzTxGeMaBM_7OvyNYTYYNWiQZW85vLvDZ8',
+    ];
 }

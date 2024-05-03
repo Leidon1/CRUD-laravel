@@ -92,76 +92,103 @@
         $('#example').DataTable({
             "processing": true,
             "scrollX": true,
-            "ajax": "{{ route('users.table') }}",
+            "data": {!! $users !!},
             "columns": [
                 {"data": "id"},
                 {"data": "name"},
                 {"data": "last_name"},
                 {"data": "username"},
                 {"data": "email"},
-                {"data": "birthday_formatted"},
+                {"data": "birthday"},
                 {"data": "country"},
                 {"data": "role"},
-                {"data": "created_at_formatted"},
+                {"data": "created_at"},
                 {"data": "profile_photo"},
-                {"data": "last_login_formatted"},
+                {"data": "last_login"},
             ],
 
         });
         $('')
 
-        $(document).ready(function () {
-            // Function to handle form submission
-            $('#add-user-form').submit(function (event) {
-                event.preventDefault(); // Prevent the default form submission
+        $('#add-user-form').submit(function (event) {
+            event.preventDefault();
+            var formData = $(this).serialize();
 
-                // Serialize form data
-                var formData = $(this).serialize();
+            $.ajax({
+                url: "{{ route('users.store') }}",
+                type: 'POST',
+                data: formData,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function (response) {
+                    if (response.success) {
+                        $('#add-user-form')[0].reset();
+                        $('#add-user-modal').addClass('hidden');
+                        // Append the new user data to the DataTable
+                        $('#example').DataTable().row.add({
+                            "id": response.user.id,
+                            "name": response.user.name,
+                            "last_name": response.user.last_name,
+                            "username": response.user.username,
+                            "email": response.user.email,
+                            "birthday": response.user.birthday,
+                            "country": response.user.country,
+                            "role": response.user.role,
+                            "created_at": response.user.created_at,
+                            "profile_photo": response.user.profile_photo,
+                        }).draw(false);
 
-                // Send an AJAX request to the server
-                $.ajax({
-                    url: $(this).attr('action'), // Get the form action URL
-                    type: 'POST',
-                    data: formData,
-                    success: function (response) {
-                        // Check if the response indicates success
-                        if (response.success) {
-                            // Reset form fields and close the modal
-                            $('#add-user-form')[0].reset();
-                            $('#add-user-modal').addClass('hidden');
-
-                            // Optionally, display a success message
-                            alert('User added successfully!');
-                        } else {
-                            // If the response indicates failure, display error messages
-                            $.each(response.errors, function (key, value) {
-                                // Find the corresponding input field and display the error message
-                                $('#' + key + '_error').text(value);
-                            });
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        // Handle errors if the AJAX request fails
-                        console.error(xhr.responseText);
-                        alert('An error occurred. Please try again.');
+                        Toastify({
+                            text: "User added successfully!",
+                            duration: 3000, // Display duration in milliseconds
+                            gravity: "top", // Display position
+                            position: 'center', // Toast position
+                            style: {
+                                background: 'linear-gradient(to right, #00b09b, #96c93d)',
+                                borderRadius: '50px'
+                            }
+                        }).showToast();
+                    } else {
+                        $.each(response.errors, function (key, value) {
+                            console.log(response.errors);
+                            $('#' + key + '_error').text(value[0]);
+                        });
+                        Toastify({
+                            text: 'Failed to register. Please check your inputs and try again.',
+                            duration: 3000,
+                            close: true,
+                            gravity: 'bottom',
+                            position: 'center',
+                            style: {
+                                background: 'linear-gradient(to right, red, #ffc371)', // Set the background color
+                                borderRadius: '50px' // Set the border radius
+                            }
+                        }).showToast();
                     }
-                });
-            });
-
-            // Function to open the modal when the "Add user" button is clicked
-            $('#add-user-btn').click(function () {
-                $('#add-user-modal').removeClass('hidden'); // Remove the 'hidden' class to display the modal
-            });
-
-            // Function to close the modal when the "Close" button is clicked
-            $('#close-modal-btn').click(function () {
-                $('#add-user-modal').addClass('hidden'); // Add the 'hidden' class to hide the modal
-            });
-            $('#close-modal').click(function () {
-                $('#add-user-modal').addClass('hidden'); // Add the 'hidden' class to hide the modal
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
+                    // Show error message
+                    Toastify({
+                        text: "An error occurred. Please try again.",
+                        duration: 3000,
+                        gravity: "top",
+                        position: 'center',
+                        backgroundColor: "#dc3545",
+                    }).showToast();
+                }
             });
         });
+        $('#add-user-btn').click(function () {
+            $('#add-user-modal').removeClass('hidden');
+        });
 
-
+        $('#close-modal-btn').click(function () {
+            $('#add-user-modal').addClass('hidden');
+        });
+        $('#close-modal').click(function () {
+            $('#add-user-modal').addClass('hidden');
+        });
     });
 </script>

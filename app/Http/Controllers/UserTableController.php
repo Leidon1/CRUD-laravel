@@ -13,24 +13,12 @@ class UserTableController extends Controller
      *
      * @return JsonResponse
      */
-    public function userData(Request $request)
+    public function index()
     {
+        // Fetch users using Eloquent ORM
         $users = User::all();
 
-        // Check if it's an AJAX request
-        if ($request->ajax()) {
-            // Modify timestamps for presentation
-            foreach ($users as $user) {
-                $user->birthday_formatted = Carbon::parse($user->birthday)->format('Y-m-d');
-                $user->created_at_formatted = Carbon::parse($user->created_at)->format('Y-m-d H:i:s');
-                $user->last_login_formatted = Carbon::parse($user->last_login)->format('Y-m-d H:i:s');
-                // Add more fields as needed
-            }
-
-            return response()->json(['data' => $users]);
-        } else {
-            // If it's not an AJAX request, return the view
-            return view('users.table', ['users' => $users]);
-        }
+        // Return the view with users data
+        return view('users.table')->with('users', $users);
     }
 }

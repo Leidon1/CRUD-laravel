@@ -8,7 +8,8 @@
                 <x-input-label for="name" :value="__('Name')"/>
                 <x-text-input id="name" class="block mt-1 w-full rounded-full" type="text" name="name"
                               :value="old('name')" autofocus autocomplete="name"/>
-                <x-input-error id="name_error" :messages="$errors->get('name')" class="mt-2"/>
+                <span id="name_error" class="text-red-500 text-xs"></span>
+
             </div>
 
             <!-- Last Name -->
@@ -16,7 +17,7 @@
                 <x-input-label for="last_name" :value="__('Last Name')"/>
                 <x-text-input id="last_name" class="block mt-1 w-full rounded-full" type="text" name="last_name"
                               :value="old('last_name')" autofocus autocomplete="last name"/>
-                <x-input-error id="last_name_error" :messages="$errors->get('last_name')" class="mt-2"/>
+                <span id="last_name_error" class="text-red-500  text-xs"></span>
             </div>
         </div>
 
@@ -28,7 +29,7 @@
                               :value="old('username')"
                               autocomplete="username"/>
                 <div id="generated-username" class="text-gray-500"></div>
-                <x-input-error id="username_error" :messages="$errors->get('username')" class="mt-2"/>
+                <span id="username_error" class="text-red-500  text-xs"></span>
 
             </div>
 
@@ -37,7 +38,7 @@
                 <x-input-label for="email" :value="__('Email')"/>
                 <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')"
                               autocomplete="username"/>
-                <x-input-error id="email_error" :messages="$errors->get('email')" class="mt-2"/>
+                <span id="email_error" class="text-red-500  text-xs"></span>
             </div>
         </div>
 
@@ -46,13 +47,13 @@
             <!-- Gender -->
             <div class="mt-4 w-full md:w-1/2">
                 <x-input-label for="gender" :value="__('Gender')"/>
-                <x-select-input id="gender" name="gender" :value="old('gender')" class="block mt-1 w-full rounded-lg">
+                <x-select-input id="gender" name="gender" :value="old('gender')" class="block mt-1 w-full rounded-full">
                     <option value="" disabled selected class="hidden">Select Gender</option>
                     <option value="male">Male</option>
                     <option value="female">Female</option>
                     <option value="non-binary">Non-binary</option>
                 </x-select-input>
-                <x-input-error id="gender_error" :messages="$errors->get('gender')" class="mt-2"/>
+                <span id="gender_error" class="text-red-500  text-xs"></span>
             </div>
 
             <!-- Country -->
@@ -60,13 +61,13 @@
                 <x-input-label for="country" :value="__('Country')"/>
 
                 <x-select-input id="country" :value="old('country')" name="country"
-                                class="block mt-1 w-full rounded-lg">
+                                class="block mt-1 w-full rounded-full">
                     <option value="" disabled selected class="hidden">Select Country</option>
                     @foreach ($countries as $country)
                         <option value="{{ $country }}">{{ $country }}</option>
                     @endforeach
                 </x-select-input>
-                <x-input-error id="country_error" :messages="$errors->get('country')" class="mt-2"/>
+                <span id="country_error" class="text-red-500  text-xs"></span>
             </div>
         </div>
 
@@ -83,11 +84,11 @@
                     </svg>
                 </div>
                 <x-text-input datepicker type="text" id="date" name="birthday" :value="old('birthday')"
-                              class="block w-full pl-10 pr-4 py-2.5 rounded-lg focus:ring-blue-500 focus:border-blue-500 border border-gray-300 text-gray-900 text-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                              class="block w-full pl-10 pr-4 py-2.5 rounded-full focus:ring-blue-500 focus:border-blue-500 border border-gray-300 text-gray-900 text-sm dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                               placeholder="Select date" autocomplete="off"/>
             </div>
 
-            <x-input-error id="birthday_error" :messages="$errors->get('birthday')" class="mt-2"/>
+            <span id="birthday_error" class="text-red-500  text-xs"></span>
         </div>
 
 
@@ -100,7 +101,7 @@
                           name="password"
                           autocomplete="new-password"/>
 
-            <x-input-error id="password_error" :messages="$errors->get('password')" class="mt-2"/>
+            <span id="password_error" class="text-red-500  text-xs"></span>
         </div>
 
         <!-- Confirm Password -->
@@ -112,7 +113,8 @@
                           name="password_confirmation" :value="old('password_confirmation')"
                           autocomplete="new-password"/>
 
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2"/>
+            <span id="password_confirmation_error" class="text-red-500  text-xs"></span>
+
         </div>
 
         <div class="flex items-center justify-end mt-4">
@@ -228,13 +230,35 @@
                     dataType: 'json',
                     success: function (response) {
                         if (response.success) {
+                            Toastify({
+                                text: 'Registration successful!',
+                                duration: 3000,
+                                close: true,
+                                gravity: 'bottom',
+                                position: 'right',
+                                style: {
+                                    background: 'linear-gradient(to right, #00b09b, #96c93d)',
+                                    borderRadius: '50px'
+                                }
+                            }).showToast();
                             window.location.href = '/dashboard';
+
                         } else {
-                            if (response.errors) {
-                                fillErrors(response.errors);
-                            } else if (response.error) {
-                                alert('An unexpected error occurred.');
-                            }
+                            console.log(response.errors);
+                            $.each(response.errors, function (key, value) {
+                                $('#' + key + '_error').text(value[0]);
+                            });
+                            Toastify({
+                                text: 'Failed to register. Please check your inputs and try again.',
+                                duration: 3000,
+                                close: true,
+                                gravity: 'top',
+                                position: 'center',
+                                style: {
+                                    background: 'linear-gradient(to right, red, #ffc371)', // Set the background color
+                                    borderRadius: '50px' // Set the border radius
+                                }
+                            }).showToast();
                         }
                     },
                     error: function (xhr, status, error) {
@@ -244,24 +268,10 @@
             });
 
 
-            function fillErrors(errors) {
-                clearErrors();
-
-                Object.keys(errors).forEach(function (field) {
-                    let errorMessage = errors[field].join('<br>');
-
-                    let errorDiv = $('#' + field + '_error');
-                    errorDiv.html(errorMessage);
-                });
-            }
-
-
             function clearErrors() {
                 $(".error-message").empty();
             }
         });
-
-
 
 
     </script>

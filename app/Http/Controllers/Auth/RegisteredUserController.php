@@ -76,7 +76,7 @@ class RegisteredUserController extends Controller
             Log::error('Validation error during registration', ['errors' => $e->errors()]);
 
             // Return validation errors to the client
-            return response()->json(['success' => false, 'errors' => $e->errors()], 422);
+            return response()->json(['success' => false, 'errors' => $e->errors()]);
         } catch (\Exception $e) {
             // Log other errors
             Log::error("Registration error: " . $e->getMessage() . "\nFile: " . $e->getFile() . "\nLine: " . $e->getLine() . "\nTrace: " . $e->getTraceAsString());
@@ -99,6 +99,7 @@ class RegisteredUserController extends Controller
         return [
             'name' => ['required', 'string', 'max:255'],
             'last_name' => ['required', 'string', 'max:255'],
+            'username' => ['required', 'string', 'max:255', 'unique:users,username'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'gender' => ['required', 'in:male,female,non-binary'],
             'country' => ['required', 'string', 'in:' . implode(',', Config::get('global.countries'))],
