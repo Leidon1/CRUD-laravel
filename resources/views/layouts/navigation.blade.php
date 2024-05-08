@@ -78,6 +78,12 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('users.table')" :active="request()->routeIs('users.table')">
+                {{ __('Users table') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('users.employees')" :active="request()->routeIs('users.employees')">
+                {{ __('Employees table') }}
+            </x-responsive-nav-link>
         </div>
 
         <!-- Responsive Settings Options -->

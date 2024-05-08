@@ -5,6 +5,8 @@ use App\Http\Controllers\EmployeesTableController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserTableController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserControllers\UserEditController;
+
 
 
 Route::get('/', function () {
@@ -33,17 +35,15 @@ Route::post('/register', [RegisteredUserController::class, 'store'])->name('regi
 Route::get('/employees', [EmployeesTableController::class, 'index'])->middleware(['auth', 'verified'])->name('users.employees');
 
 //CRUD
-//Route::get('/users', [UserController::class, 'index'])->name('users.index');
-Route::get('/users/create', [UserStoreController::class, 'create'])->name('users.create');
+
+Route::get('/users/create', [\App\Http\Controllers\UserControllers\UserStoreController::class, 'create'])->name('users.create');
 Route::post('/users/store', [\App\Http\Controllers\UserControllers\UserStoreController::class, 'store'])->name('users.store');
-//Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
-//Route::put('/users/{id}', [UserController::class, 'update'])->name('users.update');
-//Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
+Route::put('/users/{id}/update', [\App\Http\Controllers\UserControllers\UserUpdateController::class, 'update'])->name('users.update');
+Route::get('/users/{id}/edit', [\App\Http\Controllers\UserControllers\UserUpdateController::class, 'edit'])->name('users.edit');
+Route::get('/users/{id}/fetch', [\App\Http\Controllers\UserControllers\UserUpdateController::class, 'fetch'])->name('users.fetch');
+Route::delete('/users/{id}/delete', [\App\Http\Controllers\UserControllers\UserDestroyController::class, 'destroy'])->name('users.delete');
 
 
-//Route::get('/table', function () {
-//    return view('users.table');
-//})->middleware(['auth', 'verified'])->name('users.table');
 Route::match(['get', 'post'], '/table', [UserTableController::class, 'index'])->middleware(['auth', 'verified'])->name('users.table');
 
 
