@@ -53,7 +53,8 @@ class User extends Authenticatable
         'profile_photo' => 'string',
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
-        'birthday' => 'date',
+        'birthday' => 'date:Y-m-d',
+        'created_at' => 'datetime:Y-m-d H:i:s',
     ];
 
     /**

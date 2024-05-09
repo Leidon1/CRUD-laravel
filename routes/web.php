@@ -36,12 +36,12 @@ Route::get('/employees', [EmployeesTableController::class, 'index'])->middleware
 
 //CRUD
 
-Route::get('/users/create', [\App\Http\Controllers\UserControllers\UserStoreController::class, 'create'])->name('users.create');
-Route::post('/users/store', [\App\Http\Controllers\UserControllers\UserStoreController::class, 'store'])->name('users.store');
-Route::put('/users/{id}/update', [\App\Http\Controllers\UserControllers\UserUpdateController::class, 'update'])->name('users.update');
-Route::get('/users/{id}/edit', [\App\Http\Controllers\UserControllers\UserUpdateController::class, 'edit'])->name('users.edit');
-Route::get('/users/{id}/fetch', [\App\Http\Controllers\UserControllers\UserUpdateController::class, 'fetch'])->name('users.fetch');
-Route::delete('/users/{id}/delete', [\App\Http\Controllers\UserControllers\UserDestroyController::class, 'destroy'])->name('users.delete');
+Route::get('/users/create', [\App\Http\Controllers\UserControllers\UserStoreController::class, 'create'])->middleware(['auth', 'verified'])->name('users.create');
+Route::post('/users/store', [\App\Http\Controllers\UserControllers\UserStoreController::class, 'store'])->middleware(['auth', 'verified'])->name('users.store');
+Route::put('/users/{id}/update', [\App\Http\Controllers\UserControllers\UserUpdateController::class, 'update'])->middleware(['auth', 'verified'])->name('users.update');
+Route::get('/users/{id}/edit', [\App\Http\Controllers\UserControllers\UserUpdateController::class, 'edit'])->middleware(['auth', 'verified'])->name('users.edit');
+Route::get('/users/{id}/fetch', [\App\Http\Controllers\UserControllers\UserUpdateController::class, 'fetch'])->middleware(['auth', 'verified'])->name('users.fetch');
+Route::delete('/users/{id}/delete', [\App\Http\Controllers\UserControllers\UserDestroyController::class, 'destroy'])->middleware(['auth', 'verified'])->name('users.delete');
 
 
 Route::match(['get', 'post'], '/table', [UserTableController::class, 'index'])->middleware(['auth', 'verified'])->name('users.table');

@@ -50,6 +50,7 @@ class UserUpdateController extends Controller
                 'password' => ['nullable', 'string', 'min:8', 'confirmed'],
             ]);
 
+
             // Find the user by ID
             $user = User::find($id);
 

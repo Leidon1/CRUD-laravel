@@ -5,9 +5,10 @@
                 {{ __('Users table') }}
             </h2>
             <button type="button" id="add-user-btn"
-                    class=" inline-flex justify-center rounded-full border border-transparent shadow-sm px-4 py-2 bg-slate-500 text-base font-medium text-white hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 sm:ml-3 sm:w-auto sm:text-sm">
+                    class=" inline-flex items-center justify-center rounded-full border border-transparent shadow-sm px-4 py-2 bg-slate-500 text-base font-medium text-white hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 sm:ml-3 sm:w-auto sm:text-sm">
                 Add
                 user
+                <i class="fa fa-user-plus ml-1 text-xs"></i>
             </button>
         </div>
     </x-slot>
@@ -26,12 +27,12 @@
                             <th>Name</th>
                             <th>Last Name</th>
                             <th>Username</th>
+                            <th>Profile Photo</th>
                             <th>Email</th>
                             <th>Birthday</th>
                             <th>Country</th>
                             <th>Role</th>
                             <th>Created At</th>
-                            <th>Profile Photo</th>
                             <th>Last Login</th>
                             <th>Actions</th>
                         </tr>
@@ -58,19 +59,25 @@
                 {"data": "name"},
                 {"data": "last_name"},
                 {"data": "username"},
+                {
+                    "data": "profile_photo",
+                    "render": function (data, type, row) {
+                        // Assuming profile_photo contains the URL of the photo
+                        return '<img src="' + data + '" alt="Profile Photo" style="width: 70px; height: 70px;" class="rounded-xl object-cover">';
+                    }
+                },
                 {"data": "email"},
                 {"data": "birthday"},
                 {"data": "country"},
                 {"data": "role"},
                 {"data": "created_at"},
-                {"data": "profile_photo"},
                 {"data": "last_login"},
                 {
                     "data": null,
                     "render": function (data, type, row) {
                         return '<div class="flex flex-col gap-2">' +
-                            '<button class="edit-user-btn bg-orange-500 text-white rounded-full px-4 py-1 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500" data-id="' + row.id + '">Edit</button>' +
-                            '<button class="delete-user-btn bg-red-600 text-white rounded-full px-4 py-1 hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500" data-id="' + row.id + '">Delete</button>' +
+                            '<button class="edit-user-btn bg-orange-500 text-white rounded-full px-2 py-1 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 w-full items-center" data-id="' + row.id + '">Edit<i class="fa fa-user-pen ml-1 text-xs"></i></button>' +
+                            '<button class="delete-user-btn bg-red-600 text-white rounded-full px-2 py-1 hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 items-center w-full" data-id="' + row.id + '">Delete<i class="fa fa-trash ml-0.5 text-xs"></i></button>' +
                             '</div>';
                     }
                 }
@@ -114,7 +121,7 @@
                         // Remove the deleted user row from the DataTable
                         var table = $('#example').DataTable();
                         var rowIndex;
-                        table.rows().every(function(index) {
+                        table.rows().every(function (index) {
                             var rowData = this.data();
                             if (rowData.id == userId) {
                                 rowIndex = index;
@@ -172,10 +179,12 @@
         });
 
 
-
         $('#add-user-form').submit(function (event) {
             event.preventDefault();
             var formData = $(this).serialize();
+            var birthday = $('#birthday').val();
+            var formattedBirthday = formatDate(birthday);
+            formData += '&birthday=' + formattedBirthday;
 
             $.ajax({
                 url: "{{ route('users.store') }}",
@@ -194,12 +203,12 @@
                             "name": response.user.name,
                             "last_name": response.user.last_name,
                             "username": response.user.username,
+                            "profile_photo": response.user.profile_photo,
                             "email": response.user.email,
                             "birthday": response.user.birthday,
                             "country": response.user.country,
                             "role": response.user.role,
                             "created_at": response.user.created_at,
-                            "profile_photo": response.user.profile_photo,
                         }).draw(false);
 
                         Toastify({
@@ -242,6 +251,14 @@
                 }
             });
         });
+
+        function formatDate(dateString) {
+            var parts = dateString.split('/');
+            // Assuming dateString is in MM/DD/YYYY format
+            var formattedDate = parts[2] + '-' + parts[0] + '-' + parts[1];
+            return formattedDate;
+        }
+
         $('#add-user-btn').click(function () {
             $('#add-user-modal').removeClass('hidden');
         });
@@ -281,6 +298,7 @@
                 type: 'GET',
                 success: function (response) {
                     // Assuming you have fields in the edit modal to populate with user data
+                    $('.edit-user-id').val(response.user.id);
                     $('#edit-name').val(response.user.name);
                     $('#edit-last_name').val(response.user.last_name);
                     $('#edit-username').val(response.user.username);
@@ -307,8 +325,7 @@
         $('#edit-user-form').submit(function (event) {
             event.preventDefault();
             var formData = $(this).serialize();
-            var userId = $('.edit-user-id').val(); // Assuming you have an input field for user ID in the edit form
-
+            var userId = $(this).find('.edit-user-id').val(); // Assuming you have an input field for user ID in the edit form
             $.ajax({
                 url: "/users/" + userId + /update/, // Assuming this is the route for updating users and it accepts the user ID as part of the URL
                 type: 'PUT', // Assuming you're using the PUT method for updates
@@ -317,7 +334,6 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 },
                 success: function (response) {
-                    console.log(response);
                     if (response.success) {
                         $('#edit-user-modal').addClass('hidden');
                         // Assuming you have a function to update the row in the DataTable with the new data

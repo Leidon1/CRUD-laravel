@@ -32,8 +32,13 @@ class ProfileController extends Controller
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
         $user = $request->user();
-
         $validatedData = $request->validated();
+
+        if ($request->hasFile('profile_photo')) {
+            $photo = $request->file('profile_photo');
+            $photoPath = $photo->store('profile-photos', 'public'); // Store in public/profile-photos directory
+            $validatedData['profile_photo'] = 'storage/' . $photoPath;
+        }
 
         // Update user's profile information
         $user->fill([
@@ -42,8 +47,8 @@ class ProfileController extends Controller
             'country' => $validatedData['country'],
             'gender' => $validatedData['gender'],
             'birthday' => $validatedData['birthday'],
+            'profile_photo' => $validatedData['profile_photo'] ?? $user->profile_photo,
         ]);
-
         // If email has been changed, reset email verification status
         if ($user->isDirty('email')) {
             $user->email_verified_at = null;
