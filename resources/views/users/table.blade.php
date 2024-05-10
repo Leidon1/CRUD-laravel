@@ -69,7 +69,21 @@
                 {"data": "email"},
                 {"data": "birthday"},
                 {"data": "country"},
-                {"data": "role"},
+                {
+                    "data": "role",
+                    "render": function (data, type, row) {
+                        switch (data) {
+                            case 0:
+                                return 'User';
+                            case 1:
+                                return 'Moderator';
+                            case 2:
+                                return 'Admin';
+                            default:
+                                return 'Unknown Role';
+                        }
+                    }
+                },
                 {"data": "created_at"},
                 {"data": "last_login"},
                 {

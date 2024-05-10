@@ -59,7 +59,7 @@ class RegisteredUserController extends Controller
                 'profile_photo' => 'https://media.licdn.com/dms/image/C4E0BAQGiEj7SiyhMUA/company-logo_200_200/0/1668178088214/we_web_developers_logo?e=2147483647&v=beta&t=PPaEYSJkqAzTxGeMaBM_7OvyNYTYYNWiQZW85vLvDZ8',
                 'country' => $validatedData['country'],
                 'birthday' => $birthday,
-                'role' => 'user',
+                'role' => 0,
                 'password' => Hash::make($validatedData['password']),
             ]);
 

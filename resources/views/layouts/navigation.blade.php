@@ -34,7 +34,23 @@
                             <img class="h-11 w-11 rounded-full object-cover mr-2" src="{{ Auth::user()->profile_photo }}" alt="{{ Auth::user()->name }}">
                             <div class="flex flex-col justify-center items-end align-middle">
                                 <div>{{ Auth::user()->name }}</div>
-                                <div class="text-right text-xs">{{ Auth::user()->role }}</div>
+                                <div class="text-right text-gray-600 text-xs">
+                                    @php
+                                        switch(Auth::user()->role) {
+                                            case 0:
+                                                echo 'User';
+                                                break;
+                                            case 1:
+                                                echo 'Moderator';
+                                                break;
+                                            case 2:
+                                                echo 'Admin';
+                                                break;
+                                            default:
+                                                echo 'Unknown Role';
+                                        }
+                                    @endphp
+                                </div>
                             </div>
 
                             <div class="ms-1">

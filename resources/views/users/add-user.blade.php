@@ -130,9 +130,9 @@
                                     <x-select-input id="role" name="role" class="block mt-1 w-full rounded-full"
                                                     :value="old('role')">
                                         <option value="" disabled selected class="hidden">Select role</option>
-                                        <option value="admin">Admin</option>
-                                        <option value="user">User</option>
-                                        <option value="guest">Guest</option>
+                                        <option value="2">Admin</option>
+                                        <option value="1">Moderator</option>
+                                        <option value="0">User</option>
                                     </x-select-input>
                                     <span id="roles_error" class="text-red-500 text-xs"></span>
                                 </div>

@@ -21,7 +21,7 @@ return new class extends Migration {
             $table->date('birthday');
             $table->string('country');
             $table->timestamp('last_login')->nullable();
-            $table->string('role')->default('user');
+            $table->tinyInteger('role')->default(0); //user = 0, moderator = 1, admin = 2
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
