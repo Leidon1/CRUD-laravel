@@ -1,0 +1,34 @@
+= SPEC-1: Laravel Registration Form
+:sectnums:
+:toc:
+
+== Background
+
+The need to implement a comprehensive registration form in a Laravel application that not only captures basic user information but also handles additional fields like `last_name`, `username`, `gender`, and `country`. This form is crucial for ensuring a personalized and secure user experience.
+
+== Requirements
+
+- `name`: Required; validated by default in Laravel.
+- `email`: Required; validated by default in Laravel to ensure format and uniqueness.
+- `password`: Required; validated by default in Laravel for security standards.
+- `last_name`: Required; no specific length constraints mentioned.
+- `username`: Required; must be unique across users.
+- `gender`: Required; must be one of the following predefined options: "Male", "Female", "Non-Binary".
+- `country`: Required; will be handled via a dropdown select with an array of predefined countries.
+- Other fields (`profile_photo`, `birthday`, `last_login`, `role`, `email_verified_at`, `remember_token`, `created_at`, `updated_at`): Currently no specific requirements or changes mentioned.
+
+== Method
+
+<We will fill this in as we discuss the technical implementation details.>
+
+== Implementation
+
+<Steps to implement the features described in the Method section.>
+
+== Milestones
+
+<Key milestones for tracking progress of the implementation.>
+
+== Gathering Results
+
+<How we will evaluate the implementation post-production.>
