@@ -2,7 +2,7 @@
 <div id="add-user-modal" class="hidden fixed z-10 inset-0 overflow-y-auto">
     <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
         <div class="fixed inset-0 transition-opacity" aria-hidden="true">
-            <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+            <div class="absolute inset-0 bg-zinc-700 opacity-75"></div>
             1
         </div>
 
@@ -16,7 +16,7 @@
                         Add New User
                     </h3>
                     <button type="button" id="close-modal"
-                            class="focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 rounded-full items-center text-white bg-red-500 hover:bg-red-800 w-10 h-10">
+                            class="focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white rounded-full items-center text-white bg-red-500 hover:bg-red-800 w-10 h-10">
                         <i class="fa fa-times"></i></button>
                 </div>
 
@@ -179,12 +179,12 @@
             </div>
             <div class="bg-gray-50 dark:bg-gray-900 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
                 <button type="button" id="close-modal-btn"
-                        class="w-full items-center inline-flex justify-center rounded-full border border-transparent shadow-sm px-4 py-2 bg-slate-500 text-base font-medium text-white hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 sm:ml-3 sm:w-auto sm:text-sm">
+                        class="w-full items-center inline-flex justify-center rounded-full border border-transparent shadow-sm px-4 py-2 bg-zinc-500 text-base font-medium text-white hover:bg-zinc-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white sm:ml-3 sm:w-auto sm:text-sm">
                     Close
                     <i class="fa fa-times ml-2 text-xs"></i>
                 </button>
                 <button type="submit" form="add-user-form"
-                        class="mt-3 w-full items-center inline-flex justify-center rounded-full border border-transparent shadow-sm px-4 py-2 bg-green-500 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        class="mt-3 w-full items-center inline-flex justify-center rounded-full border border-transparent shadow-sm px-4 py-2 bg-green-500 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
                     Save
                     <i class="fa fa-check ml-2 text-xs"></i>
                 </button>
