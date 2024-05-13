@@ -4,12 +4,14 @@
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                 {{ __('Users table') }}
             </h2>
-            <button type="button" id="add-user-btn"
-                    class=" inline-flex items-center justify-center rounded-full border border-transparent shadow-sm px-4 py-2 bg-slate-500 text-base font-medium text-white hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 sm:ml-3 sm:w-auto sm:text-sm">
-                Add
-                user
-                <i class="fa fa-user-plus ml-1 text-xs"></i>
-            </button>
+            @can('view-button')
+                <button type="button" id="add-user-btn"
+                        class=" inline-flex items-center justify-center rounded-full border border-transparent shadow-sm px-4 py-2 bg-zinc-500 text-base font-medium text-white hover:bg-zinc-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white sm:ml-3 sm:w-auto sm:text-sm">
+                    Add
+                    user
+                    <i class="fa fa-user-plus ml-1 text-xs"></i>
+                </button>
+            @endcan
         </div>
     </x-slot>
 
@@ -34,7 +36,9 @@
                             <th>Role</th>
                             <th>Created At</th>
                             <th>Last Login</th>
-                            <th>Actions</th>
+                            @can('view-button')
+                                <th>Actions</th>
+                            @endcan
                         </tr>
                         </thead>
                         <tbody>
@@ -50,6 +54,7 @@
 <script>
     $(document).ready(function () {
         var $dataTable = $('#example');
+        var userCanViewButton = {{ auth()->user()->can('view-button') ? 'true' : 'false' }};
         $dataTable.DataTable({
             "processing": true,
             "scrollX": true,
@@ -86,20 +91,26 @@
                 },
                 {"data": "created_at"},
                 {"data": "last_login"},
+                    @can('view-button')
                 {
                     "data": null,
                     "render": function (data, type, row) {
-                        return '<div class="flex flex-col gap-2">' +
-                            '<button class="edit-user-btn bg-orange-500 text-white rounded-full px-2 py-1 hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 w-full items-center" data-id="' + row.id + '">Edit<i class="fa fa-user-pen ml-1 text-xs"></i></button>' +
-                            '<button class="delete-user-btn bg-red-600 text-white rounded-full px-2 py-1 hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 items-center w-full" data-id="' + row.id + '">Delete<i class="fa fa-trash ml-0.5 text-xs"></i></button>' +
-                            '</div>';
+                        var buttonsHtml = '<div class="flex flex-col gap-2">';
+
+                        // Add buttons HTML only if user is an admin
+                        buttonsHtml += '<button class="edit-user-btn bg-orange-400 text-white rounded-full px-2 py-1 hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white w-full items-center" data-id="' + row.id + '">Edit<i class="fa fa-user-pen ml-1 text-xs"></i></button>';
+                        buttonsHtml += '<button class="delete-user-btn bg-red-600 text-white rounded-full px-2 py-1 hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white items-center w-full" data-id="' + row.id + '">Delete<i class="fa fa-trash ml-0.5 text-xs"></i></button>';
+
+                        buttonsHtml += '</div>';
+
+                        return buttonsHtml;
                     }
-                }
+                },
+                @endcan
 
             ],
 
         });
-        $('')
 
 
         // Delete user button click handler

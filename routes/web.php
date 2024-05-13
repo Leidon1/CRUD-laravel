@@ -10,18 +10,18 @@ use App\Http\Controllers\UserControllers\UserEditController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 
 
-/**General user routes **/
-Route::middleware(['auth', 'verified'])->get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
-
-/**Moderator routes **/
-Route::middleware('moderatorAuth')->prefix('moderator')->group(function(){
-    Route::get('/dashboard', [DashboardController::class, 'moderatorDashboard'])->name('moderatorDashboard'); // Define the moderatorDashboard route
-});
-
 /**Admin routes **/
 Route::middleware('adminAuth')->prefix('admin')->group(function(){
     Route::get('/dashboard', [DashboardController::class, 'adminDashboard'])->name('adminDashboard');
 });
+
+/**Moderator routes **/
+Route::middleware('moderatorAuth')->prefix('moderator')->group(function(){
+    Route::get('/table', [DashboardController::class, 'moderatorDashboard'])->name('moderatorDashboard'); // Define the moderatorDashboard route
+});
+
+/**General user routes **/
+Route::middleware(['auth', 'verified'])->get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
 
 Route::post('login', [AuthenticatedSessionController::class, 'store']);
 

@@ -46,7 +46,7 @@ class UserUpdateController extends Controller
                 'gender' => ['required', 'string', Rule::in(['male', 'female', 'non-binary'])],
                 'country' => ['required', 'string', Rule::in(config('global.countries'))],
                 'birthday' => ['required', 'date'],
-                'role' => ['required', 'string', Rule::in(['admin', 'user', 'guest'])],
+                'role' => ['required', 'integer', Rule::in([2, 1, 0])],
                 'password' => ['nullable', 'string', 'min:8', 'confirmed'],
             ]);
 

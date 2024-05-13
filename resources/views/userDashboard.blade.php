@@ -11,6 +11,8 @@
                 <div class="p-6 text-gray-900 dark:text-gray-100">
                     {{ __("You're logged in!") }}
                     <h1 class="text-xs text-gray-500">User dashboard</h1>
+{{--                    <pre>{{ print_r(session()->all()) }}</pre>--}}
+
                 </div>
             </div>
         </div>

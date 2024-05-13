@@ -13,7 +13,8 @@
         @csrf
     </form>
     <div class="flex flex-col md:flex-row gap-5 mt-6">
-        <form method="post" action="{{ route('profile.update') }}" enctype="multipart/form-data" class="mt-6 w-full space-y-6 flex flex-col md:flex-row gap-5 mt-6">
+        <form method="post" action="{{ route('profile.update') }}" enctype="multipart/form-data"
+              class="mt-6 w-full space-y-6 flex flex-col md:flex-row gap-5 mt-6">
             @csrf
             @method('patch')
             <input type="file" id="profile_photo_input" name="profile_photo" style="display: none">
@@ -131,10 +132,9 @@
                 <!-- Hidden input element for selecting profile photo -->
 
 
-
                 <!-- Profile photo display -->
-                <img src="{{ asset( $user->profile_photo) }}" alt="Profile Photo"
-                     class="w-full h-96 md:h-5/6 rounded-t-3xl object-cover">
+                <img src="{{ asset( $user->profile_photo) }}" alt="{{ asset($user->name) }}'s photo"
+                     class="w-full h-96 md:h-5/6 rounded-t-3xl cursor-pointer object-cover" id="profile-photo">
                 <!-- Button to trigger profile photo selection -->
                 <button id="change-photo-btn" type="button"
                         class="bg-slate-500 w-full hover:bg-slate-700 text-white font-bold py-2 px-4 rounded-b-3xl">
@@ -143,23 +143,52 @@
             </div>
         </form>
 
+        <div class="fixed inset-0 hidden flex items-center justify-center bg-black bg-opacity-75 z-50">
+            <div class="relative w-full max-w-3xl">
+                <button type="button" class="absolute top-4 right-4 text-white/50 hover:text-white">
+                    <i class="fa fa-times"></i>
+                </button>
+                <img src="{{ asset($user->profile_photo) }}" class="object-cover rounded-2xl w-full" alt="{{ asset($user->name) }}'s photo">
+            </div>
+        </div>
     </div>
 
 </section>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('change-photo-btn').addEventListener('click', function() {
+    document.addEventListener('DOMContentLoaded', function () {
+        document.getElementById('change-photo-btn').addEventListener('click', function () {
             document.getElementById('profile_photo_input').click();
         });
 
-        document.getElementById('profile_photo_input').addEventListener('change', function() {
+        document.getElementById('profile_photo_input').addEventListener('change', function () {
             const file = this.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     document.querySelector('.w-full img').src = e.target.result;
                 }
                 reader.readAsDataURL(file);
+            }
+        });
+        function openPhoto(){
+            document.querySelector('.fixed.inset-0').classList.remove('hidden');
+        }
+        function closePhoto(){
+            document.querySelector('.fixed.inset-0').classList.add('hidden');
+        }
+        // Add click event listener to the profile photo
+        document.getElementById('profile-photo').addEventListener('click', function () {
+            openPhoto();
+        });
+
+        // Add click event listener to the close button
+        document.querySelector('.fixed.inset-0 button').addEventListener('click', function () {
+            closePhoto();
+        });
+        document.querySelector('.fixed.inset-0').addEventListener('click', function (event) {
+            // Check if the click target is the overlay itself
+            if (event.target === this) {
+                closePhoto();
             }
         });
     });

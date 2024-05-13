@@ -48,6 +48,9 @@ class RegisteredUserController extends Controller
             // Generate a unique username
             $username = $request->has('username') ? $request->username : $this->generateUsername($request->name, $request->last_name);
 
+            $defaultMalePhoto = 'storage/profile-photos/default/male.png';
+            $defaultFemalePhoto = 'storage/profile-photos/default/female.png';
+            $defaultNonBinaryPhoto = 'storage/profile-photos/default/unisex.png';
 
             // Create a new user record
             $user = User::create([
@@ -56,13 +59,28 @@ class RegisteredUserController extends Controller
                 'username' => $username,
                 'email' => $validatedData['email'],
                 'gender' => $validatedData['gender'],
-                'profile_photo' => 'https://media.licdn.com/dms/image/C4E0BAQGiEj7SiyhMUA/company-logo_200_200/0/1668178088214/we_web_developers_logo?e=2147483647&v=beta&t=PPaEYSJkqAzTxGeMaBM_7OvyNYTYYNWiQZW85vLvDZ8',
                 'country' => $validatedData['country'],
                 'birthday' => $birthday,
                 'role' => 0,
                 'password' => Hash::make($validatedData['password']),
             ]);
 
+            // Set default profile photo based on gender if no photo provided
+            if (!$request->has('profile_photo')) {
+                switch ($validatedData['gender']) {
+                    case 'male':
+                        $validatedData['profile_photo'] = $defaultMalePhoto;
+                        break;
+                    case 'female':
+                        $validatedData['profile_photo'] = $defaultFemalePhoto;
+                        break;
+                    case 'non-binary':
+                        $validatedData['profile_photo'] = $defaultNonBinaryPhoto;
+                        break;
+                    default:
+                        $validatedData['profile_photo'] = 'storage/profile-photos/default/user.png';
+                }
+            }
             // Trigger the Registered event
             event(new Registered($user));
 
@@ -146,6 +164,7 @@ class RegisteredUserController extends Controller
 
         return response()->json(['username' => $username]);
     }
+
     private function generateUsername(string $name, string $last_name): string
     {
         $username = strtolower($name . $last_name[0]);

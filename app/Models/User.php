@@ -9,12 +9,25 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable
 {
     use HasFactory, Notifiable;
+
     /**
      * Define the relationship with the Role model.
      */
     public function role()
     {
         return $this->belongsTo(Role::class);
+    }
+    /**
+     * Check if the user has the specified role.
+     *
+     * @param int|string $role
+     * @return bool
+     */
+    public function hasRole($role)
+    {
+        // Implement your logic to check if the user has the specified role.
+        // For example, if the role is stored in a column named 'role' in the users table:
+        return $this->role == $role;
     }
     /**
      * The attributes that are mass assignable.
@@ -63,12 +76,50 @@ class User extends Authenticatable
      * @var string
      */
     protected $dateFormat = 'Y-m-d H:i:s';
+
     /**
      * The attributes that should have default values.
      *
      * @var array
      */
-    protected $attributes = [
-        'profile_photo' => 'https://media.licdn.com/dms/image/C4E0BAQGiEj7SiyhMUA/company-logo_200_200/0/1668178088214/we_web_developers_logo?e=2147483647&v=beta&t=PPaEYSJkqAzTxGeMaBM_7OvyNYTYYNWiQZW85vLvDZ8',
-    ];
+    protected $attributes = [];
+
+    /**
+     * Initialize default values for attributes.
+     */
+    protected function initializeDefaultValues()
+    {
+        // Set default values for the attributes
+        $this->attributes['profile_photo'] = $this->getDefaultProfilePhoto();
+    }
+
+    /**
+     * Get the default profile photo based on user's gender.
+     *
+     * @return string
+     */
+    protected function getDefaultProfilePhoto()
+    {
+        switch ($this->attributes['gender']) {
+            case 'male':
+                return 'storage/profile-photos/default/male.png';
+            case 'female':
+                return 'storage/profile-photos/default/female.png';
+            case 'non-binary':
+                return 'storage/profile-photos/default/unisex.png';
+            default:
+                return 'storage/profile-photos/default/user.png'; // Default fallback
+        }
+    }
+
+    /**
+     * Boot the model.
+     */
+    protected static function booted()
+    {
+        // Set default values for new model instances
+        static::creating(function ($model) {
+            $model->initializeDefaultValues();
+        });
+    }
 }

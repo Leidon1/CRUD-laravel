@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->string('username')->unique();
             $table->string('email')->unique();
             $table->string('gender');
-            $table->string('profile_photo')->nullable()->default('https://media.licdn.com/dms/image/C4E0BAQGiEj7SiyhMUA/company-logo_200_200/0/1668178088214/we_web_developers_logo?e=2147483647&v=beta&t=PPaEYSJkqAzTxGeMaBM_7OvyNYTYYNWiQZW85vLvDZ8');
+            $table->string('profile_photo')->nullable()->default('storage/profile-photos/default/user.png');
             $table->date('birthday');
             $table->string('country');
             $table->timestamp('last_login')->nullable();

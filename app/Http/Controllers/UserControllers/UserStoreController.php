@@ -24,6 +24,11 @@ class UserStoreController extends Controller
     public function store(Request $request)
     {
         try {
+
+            $defaultMalePhoto = 'storage/profile-photos/default/male.png';
+            $defaultFemalePhoto = 'storage/profile-photos/default/female.png';
+            $defaultNonBinaryPhoto = 'storage/profile-photos/default/unisex.png';
+
             // Validate the incoming request data
             $validatedData = $request->validate([
                 'name' => ['required', 'string', 'max:255'],
@@ -32,9 +37,8 @@ class UserStoreController extends Controller
                 'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
                 'gender' => ['required', 'string', Rule::in(['male', 'female', 'non-binary'])],
                 'country' => ['required', 'string', Rule::in(config('global.countries'))],
-                'profile_photo' => 'https://media.licdn.com/dms/image/C4E0BAQGiEj7SiyhMUA/company-logo_200_200/0/1668178088214/we_web_developers_logo?e=2147483647&v=beta&t=PPaEYSJkqAzTxGeMaBM_7OvyNYTYYNWiQZW85vLvDZ8',
                 'birthday' => ['required', 'date'],
-                'role' => ['required', 'string', Rule::in(['admin', 'user', 'guest'])],
+                'role' => ['required', 'integer', Rule::in([2, 1, 0])],
                 'password' => ['required', 'string', 'min:8', 'confirmed'],
             ]);
 
@@ -50,6 +54,23 @@ class UserStoreController extends Controller
                 'role' => $validatedData['role'],
                 'password' => Hash::make($validatedData['password']),
             ]);
+
+            // Set default profile photo based on gender if no photo provided
+            if (!$request->has('profile_photo')) {
+                switch ($validatedData['gender']) {
+                    case 'male':
+                        $validatedData['profile_photo'] = $defaultMalePhoto;
+                        break;
+                    case 'female':
+                        $validatedData['profile_photo'] = $defaultFemalePhoto;
+                        break;
+                    case 'non-binary':
+                        $validatedData['profile_photo'] = $defaultNonBinaryPhoto;
+                        break;
+                    default:
+                        $validatedData['profile_photo'] = 'storage/profile-photos/default/user.png';
+                }
+            }
 
             // Log successful user creation
             Log::info('User created successfully', ['user_id' => $user->id]);
